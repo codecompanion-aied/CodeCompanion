@@ -1,4 +1,5 @@
 import streamlit as st
+import numpy as np
 
 # Insert a chat message container.
 with st.chat_message("user"):
