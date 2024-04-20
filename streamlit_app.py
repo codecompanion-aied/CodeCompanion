@@ -1,5 +1,3 @@
-$ pip3 install streamlit
-
 import streamlit as st
 
 # Insert a chat message container.
