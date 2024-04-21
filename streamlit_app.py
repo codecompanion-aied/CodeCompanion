@@ -53,7 +53,7 @@ def reset_chat():
     gc.collect()
 
 
-owner = "larymak"
+owner = "francesco-kruk"
 repo = "Python-project-Scripts"
 branch = "main"
 
