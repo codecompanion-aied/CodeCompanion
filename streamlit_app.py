@@ -78,7 +78,7 @@ owner, repo = parse_github_url(github_url)
 if validate_owner_repo(owner, repo):
     with st.spinner(f"Loading {repo} repository by {owner}..."):
         try:
-            input_dir_path = f"/{repo}"
+            input_dir_path = f"/Users/francescokruk/{repo}"
             
             if not os.path.exists(input_dir_path):
                 subprocess.run(["git", "clone", github_url], check=True, text=True, capture_output=True)
