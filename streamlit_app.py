@@ -25,11 +25,10 @@ from llama_index.llms.huggingface import (
 
 with st.sidebar:
     # Input for Jina API key
-    text_input_container = st.empty()
-    jinaai_api_key = text_input_container.text_input("Jina API key", type="password")
+    jinaai_api_key = text_input("Jina API key", type="password")
 
     if jinaai_api_key != "":
-        text_input_container.empty()
+        jinaai_api_key.empty()
         # setting up the embedding model
         embed_model = JinaEmbedding(
             api_key=jinaai_api_key,
