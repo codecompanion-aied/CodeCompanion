@@ -1,8 +1,4 @@
 import os
-
-os.environ["HF_HOME"] = "/teamspace/studios/this_studio/weights"
-os.environ["TORCH_HOME"] = "/teamspace/studios/this_studio/weights"
-
 import gc
 import re
 import uuid
@@ -14,26 +10,28 @@ from dotenv import load_dotenv
 import streamlit as st
 
 from llama_index.core import Settings
-from llama_index.llms.ollama import Ollama
 from llama_index.core import PromptTemplate
 from llama_index.core import SimpleDirectoryReader
 from llama_index.core import VectorStoreIndex
 from llama_index.core.storage.storage_context import StorageContext
 
-from langchain.embeddings import HuggingFaceEmbeddings
-from llama_index.embeddings.langchain import LangchainEmbedding
-
-from rag_101.retriever import (
-    load_embedding_model,
-    load_reranker_model
+from llama_index.embeddings.jinaai import JinaEmbedding
+from llama_index.postprocessor.jinaai_rerank import JinaRerank
+from llama_index.llms.huggingface import (
+    HuggingFaceInferenceAPI,
+    HuggingFaceLLM,
 )
 
 # setting up the llm
-llm=Ollama(model="mistral", request_timeout=60.0)
+llm=HuggingFaceInferenceAPI(
+    model_name="mistralai/Mixtral-8x7B-Instruct-v0.1"
+)
 
 # setting up the embedding model
-lc_embedding_model = load_embedding_model()
-embed_model = LangchainEmbedding(lc_embedding_model)
+embed_model = JinaEmbedding(
+    api_key=jinaai_api_key,
+    model="jina-embeddings-v2-base-code",
+)
 
 # utility functions
 def parse_github_url(url):
