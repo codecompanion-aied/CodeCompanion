@@ -70,7 +70,7 @@ def reset_chat():
     
     
 # Input for GitHub URL
-github_url = "https://github.com/larymak/Python-project-Scripts.git"
+github_url = "https://github.com/larymak/Python-project-Scripts"
 
 message_container = st.empty()  # Placeholder for dynamic messages
 
