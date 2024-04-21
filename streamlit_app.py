@@ -26,7 +26,7 @@ from llama_index.llms.huggingface import (
 with st.sidebar:
     
     # Input for Jina API key
-    jinaai_api_key = st.text_input("Jina API key")
+    jinaai_api_key = st.text_input("Jina API key", type="password")
 
     # Button to load the Jina API key
     key_button = st.button("Load Key")
