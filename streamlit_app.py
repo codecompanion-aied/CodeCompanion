@@ -29,7 +29,7 @@ with st.sidebar:
     jinaai_api_key = st.text_input("Jina API key", label_visibility="hidden")
 
     # Button to load the Jina API key
-    process_button = st.button("Load")
+    key_button = st.button("Load Key")
 
     message_container = st.empty()  # Placeholder for dynamic messages
 
@@ -80,7 +80,7 @@ with st.sidebar:
     github_url = st.text_input("GitHub Repository URL")
 
     # Button to load and process the GitHub repository
-    process_button = st.button("Load")
+    process_button = st.button("Load Repo")
 
     message_container = st.empty()  # Placeholder for dynamic messages
 
