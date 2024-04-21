@@ -28,7 +28,7 @@ with st.sidebar:
     text_input_container = st.empty()
     jinaai_api_key = text_input_container.text_input("Jina API key", type="password")
 
-    if t != "":
+    if jinaai_api_key != "":
         text_input_container.empty()
         # setting up the embedding model
         embed_model = JinaEmbedding(
