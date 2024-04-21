@@ -25,16 +25,17 @@ from llama_index.llms.huggingface import (
 
 with st.sidebar:
     # Input for Jina API key
-    jinaai_api_key = st.text_input("Jina API key", type="password")
+    text_input_container = st.empty()
+    text_input_container.text_input("Jina API key", key="text_input", type="password")
 
-    if jinaai_api_key != "":
-        jinaai_api_key.empty()
+    if st.session_state.text_input != "":
+        text_input_container.empty()
+        jinaai_api_key = st.session_state.text_input
         # setting up the embedding model
         embed_model = JinaEmbedding(
             api_key=jinaai_api_key,
             model="jina-embeddings-v2-base-code",
         )
-        jinaai_api_key
 
 # setting up the llm
 llm=HuggingFaceInferenceAPI(
