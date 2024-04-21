@@ -33,7 +33,7 @@ with st.sidebar:
 
     message_container = st.empty()  # Placeholder for dynamic messages
 
-    if process_button and jinaai_api_key:
+    if key_button and jinaai_api_key:
         # setting up the embedding model
         jinaai_api_key = getpass.getpass()
         embed_model = JinaEmbedding(
