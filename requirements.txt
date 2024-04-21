@@ -1,9 +1,9 @@
 nest_asyncio
 python-dotenv
-llama_index
-llama_index.llms.ollama
-langchain
-llama_index.embeddings.langchain
 loguru
-sentence-transformers
 unstructured
+llama_index
+llama-index-embeddings-jinaai
+llama-index-postprocessor-jinaai-rerank
+llama-index-llms-huggingface
+"transformers[torch]" "huggingface_hub[inference]"
