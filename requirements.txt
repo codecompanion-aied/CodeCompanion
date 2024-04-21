@@ -1,1 +1,2 @@
 nest_asyncio
+dotenv
