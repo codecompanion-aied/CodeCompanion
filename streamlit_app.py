@@ -23,6 +23,15 @@ from llama_index.llms.huggingface import (
     HuggingFaceLLM,
 )
 
+
+# Input user directory
+text_input_container = st.empty()
+text_input_container.text_input("User directory", "/Users/", key="text_input")
+
+if st.session_state.text_input != "":
+    text_input_container.empty()
+    os.chdir(st.session_state.text_input)
+
 # Input for Jina API key
 text_input_container = st.empty()
 text_input_container.text_input("Jina API key", key="text_input", type="password")
