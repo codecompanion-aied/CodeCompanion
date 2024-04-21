@@ -24,14 +24,6 @@ from llama_index.llms.huggingface import (
 )
 
 
-# Input user directory
-text_input_container = st.empty()
-text_input_container.text_input("Local User Directory", placeholder="C:/Users/", key="user_dir")
-
-if st.session_state.user_dir != "":
-    text_input_container.empty()
-    os.chdir(st.session_state.user_dir)
-
 # Input for Jina API key
 text_input_container = st.empty()
 text_input_container.text_input("Jina API key", key="api_key", type="password")
