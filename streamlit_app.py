@@ -28,7 +28,7 @@ from llama_index.llms.huggingface import (
 text_input_container = st.empty()
 text_input_container.text_input("User directory", placeholder="/Users/", key="user_dir")
 
-if st.session_state.text_input != "":
+if st.session_state.user_dir != "":
     text_input_container.empty()
     os.chdir(st.session_state.user_dir)
 
@@ -36,7 +36,7 @@ if st.session_state.text_input != "":
 text_input_container = st.empty()
 text_input_container.text_input("Jina API key", key="api_key", type="password")
 
-if st.session_state.text_input != "":
+if st.session_state.api_key != "":
     text_input_container.empty()
     jinaai_api_key = st.session_state.api_key
     # setting up the embedding model
