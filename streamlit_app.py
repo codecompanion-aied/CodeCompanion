@@ -23,16 +23,27 @@ from llama_index.llms.huggingface import (
     HuggingFaceLLM,
 )
 
+with st.sidebar:
+    
+    # Input for Jina API key
+    jinaai_api_key = st.text_input("Jina API key", label_visibility="hidden")
+
+    # Button to load the Jina API key
+    process_button = st.button("Load")
+
+    message_container = st.empty()  # Placeholder for dynamic messages
+
+    if process_button and jinaai_api_key:
+        # setting up the embedding model
+        jinaai_api_key = getpass.getpass()
+        embed_model = JinaEmbedding(
+            api_key=jinaai_api_key,
+            model="jina-embeddings-v2-base-code",
+        )
+
 # setting up the llm
 llm=HuggingFaceInferenceAPI(
     model_name="mistralai/Mixtral-8x7B-Instruct-v0.1"
-)
-
-# setting up the embedding model
-jinaai_api_key = getpass.getpass()
-embed_model = JinaEmbedding(
-    api_key=jinaai_api_key,
-    model="jina-embeddings-v2-base-code",
 )
 
 # utility functions
