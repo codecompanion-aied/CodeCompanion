@@ -15,7 +15,7 @@ from llama_index.core import PromptTemplate
 from llama_index.readers.github import GithubRepositoryReader
 from llama_index.core import VectorStoreIndex
 from llama_index.core.storage.storage_context import StorageContext
-from llama_index.readers.github.repository.github_client import BaseGithubClient
+from llama_index.readers.github.repository.github_client import GithubClient
 
 from llama_index.embeddings.jinaai import JinaEmbedding
 from llama_index.postprocessor.jinaai_rerank import JinaRerank
@@ -61,7 +61,7 @@ message_container = st.empty()  # Placeholder for dynamic messages
 
 with st.spinner(f"Loading {repo} repository by {owner}..."):
     documents = GithubRepositoryReader(
-        github_client=BaseGithubClient,
+        github_client=GithubClient,
         owner=owner,
         repo=repo
     ).load_data(branch=branch)
