@@ -24,6 +24,14 @@ from llama_index.llms.huggingface import (
 )
 
 
+jinaai_api_key = os.environ.get("JINA_API_KEY")
+
+# setting up the embedding model
+embed_model = JinaEmbedding(
+    api_key=jinaai_api_key,
+    model="jina-embeddings-v2-base-code",
+)
+
 # setting up the llm
 llm=HuggingFaceInferenceAPI(
     model_name="mistralai/Mixtral-8x7B-Instruct-v0.1"
