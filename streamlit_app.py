@@ -63,6 +63,7 @@ repo = "Python-project-Scripts"
 message_container = st.empty()  # Placeholder for dynamic messages
 
 with st.spinner(f"Loading {repo} repository by {owner}..."):
+    st.text(os.system("pwd"))
     try:
         input_dir_path = f"/Users/francescokruk/{repo}"
         
