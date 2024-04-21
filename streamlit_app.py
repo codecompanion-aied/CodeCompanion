@@ -23,19 +23,18 @@ from llama_index.llms.huggingface import (
     HuggingFaceLLM,
 )
 
-with st.sidebar:
-    # Input for Jina API key
-    text_input_container = st.empty()
-    text_input_container.text_input("Jina API key", key="text_input", type="password")
+# Input for Jina API key
+text_input_container = st.empty()
+text_input_container.text_input("Jina API key", key="text_input", type="password")
 
-    if st.session_state.text_input != "":
-        text_input_container.empty()
-        jinaai_api_key = st.session_state.text_input
-        # setting up the embedding model
-        embed_model = JinaEmbedding(
-            api_key=jinaai_api_key,
-            model="jina-embeddings-v2-base-code",
-        )
+if st.session_state.text_input != "":
+    text_input_container.empty()
+    jinaai_api_key = st.session_state.text_input
+    # setting up the embedding model
+    embed_model = JinaEmbedding(
+        api_key=jinaai_api_key,
+        model="jina-embeddings-v2-base-code",
+    )
 
 # setting up the llm
 llm=HuggingFaceInferenceAPI(
@@ -68,80 +67,78 @@ def reset_chat():
     st.session_state.messages = []
     st.session_state.context = None
     gc.collect()
-
-
-with st.sidebar:
     
-    # Input for GitHub URL
-    github_url = st.text_input("GitHub Repository URL")
+    
+# Input for GitHub URL
+github_url = st.text_input("GitHub Repository URL")
 
-    # Button to load and process the GitHub repository
-    process_button = st.button("Load Repo")
+# Button to load and process the GitHub repository
+process_button = st.button("Load Repo")
 
-    message_container = st.empty()  # Placeholder for dynamic messages
+message_container = st.empty()  # Placeholder for dynamic messages
 
-    if process_button and github_url:
-        owner, repo = parse_github_url(github_url)
-        if validate_owner_repo(owner, repo):
-            with st.spinner(f"Loading {repo} repository by {owner}..."):
-                try:
-                    input_dir_path = f"/{repo}"
-                    
-                    if not os.path.exists(input_dir_path):
-                        subprocess.run(["git", "clone", github_url], check=True, text=True, capture_output=True)
+if process_button and github_url:
+    owner, repo = parse_github_url(github_url)
+    if validate_owner_repo(owner, repo):
+        with st.spinner(f"Loading {repo} repository by {owner}..."):
+            try:
+                input_dir_path = f"/{repo}"
+                
+                if not os.path.exists(input_dir_path):
+                    subprocess.run(["git", "clone", github_url], check=True, text=True, capture_output=True)
 
-                    if os.path.exists(input_dir_path):
-                        loader = SimpleDirectoryReader(
-                            input_dir = input_dir_path,
-                            required_exts=[".py", ".ipynb", ".js", ".ts", ".md"],
-                            recursive=True
-                        )
-                    else:    
-                        st.error('Error occurred while cloning the repository, carefully check the url')
-                        st.stop()
-
-                    docs = loader.load_data()
-
-                    # ====== Create vector store and upload data ======
-                    Settings.embed_model = embed_model
-                    index = VectorStoreIndex.from_documents(docs)
-
-                    # ====== Setup a query engine ======
-                    Settings.llm = llm
-                    query_engine = index.as_query_engine(streaming=True, similarity_top_k=4)
-                    
-                    # ====== Customise prompt template ======
-                    qa_prompt_tmpl_str = (
-                    "Context information is below.\n"
-                    "---------------------\n"
-                    "{context_str}\n"
-                    "---------------------\n"
-                    "Given the context information above I want you to think step by step to answer the query in a crisp manner, incase case you don't know the answer say 'I don't know!'.\n"
-                    "Query: {query_str}\n"
-                    "Answer: "
+                if os.path.exists(input_dir_path):
+                    loader = SimpleDirectoryReader(
+                        input_dir = input_dir_path,
+                        required_exts=[".py", ".ipynb", ".js", ".ts", ".md"],
+                        recursive=True
                     )
-                    qa_prompt_tmpl = PromptTemplate(qa_prompt_tmpl_str)
-
-                    query_engine.update_prompts(
-                        {"response_synthesizer:text_qa_template": qa_prompt_tmpl}
-                    )
-
-                    if docs:
-                        message_container.success("Data loaded successfully!!")
-                    else:
-                        message_container.write(
-                            "No data found, check if the repository is not empty!"
-                        )
-                    st.session_state.query_engine = query_engine
-
-                except Exception as e:
-                    st.error(f"An error occurred: {e}")
+                else:    
+                    st.error('Error occurred while cloning the repository, carefully check the url')
                     st.stop()
 
-                st.success("Ready to Chat!")
-        else:
-            st.error('Invalid owner or repository')
-            st.stop()
+                docs = loader.load_data()
+
+                # ====== Create vector store and upload data ======
+                Settings.embed_model = embed_model
+                index = VectorStoreIndex.from_documents(docs)
+
+                # ====== Setup a query engine ======
+                Settings.llm = llm
+                query_engine = index.as_query_engine(streaming=True, similarity_top_k=4)
+                
+                # ====== Customise prompt template ======
+                qa_prompt_tmpl_str = (
+                "Context information is below.\n"
+                "---------------------\n"
+                "{context_str}\n"
+                "---------------------\n"
+                "Given the context information above I want you to think step by step to answer the query in a crisp manner, incase case you don't know the answer say 'I don't know!'.\n"
+                "Query: {query_str}\n"
+                "Answer: "
+                )
+                qa_prompt_tmpl = PromptTemplate(qa_prompt_tmpl_str)
+
+                query_engine.update_prompts(
+                    {"response_synthesizer:text_qa_template": qa_prompt_tmpl}
+                )
+
+                if docs:
+                    message_container.success("Data loaded successfully!!")
+                else:
+                    message_container.write(
+                        "No data found, check if the repository is not empty!"
+                    )
+                st.session_state.query_engine = query_engine
+
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
+                st.stop()
+
+            st.success("Ready to Chat!")
+    else:
+        st.error('Invalid owner or repository')
+        st.stop()
 
 col1, col2 = st.columns([6, 1])
 
