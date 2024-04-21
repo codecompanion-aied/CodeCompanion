@@ -1,3 +1,4 @@
 nest_asyncio
 python-dotenv
 llama_index
+llama_index.llms.ollama
