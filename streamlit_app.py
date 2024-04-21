@@ -89,7 +89,7 @@ with st.sidebar:
         if validate_owner_repo(owner, repo):
             with st.spinner(f"Loading {repo} repository by {owner}..."):
                 try:
-                    input_dir_path = f"/teamspace/studios/this_studio/{repo}"
+                    input_dir_path = f"/{repo}"
                     
                     if not os.path.exists(input_dir_path):
                         subprocess.run(["git", "clone", github_url], check=True, text=True, capture_output=True)
