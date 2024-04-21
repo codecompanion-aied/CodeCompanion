@@ -41,18 +41,9 @@ llm=HuggingFaceInferenceAPI(
     model_name="mistralai/Mixtral-8x7B-Instruct-v0.1"
 )
 
-# utility functions
-def parse_github_url(url):
-    pattern = r"https://github\.com/([^/]+)/([^/]+)"
-    match = re.match(pattern, url)
-    return match.groups() if match else (None, None)
 
 def clone_repo(repo_url):
     return subprocess.run(["git", "clone", repo_url], check=True, text=True, capture_output=True)
-
-
-def validate_owner_repo(owner, repo):
-    return bool(owner) and bool(repo)
 
 
 if "id" not in st.session_state:
@@ -68,73 +59,69 @@ def reset_chat():
     st.session_state.context = None
     gc.collect()
     
-    
-# Input for GitHub URL
+
 github_url = "https://github.com/larymak/Python-project-Scripts"
+owner = "larymak"
+repo = "Python-project-Scripts"
 
 message_container = st.empty()  # Placeholder for dynamic messages
 
-owner, repo = parse_github_url(github_url)
-if validate_owner_repo(owner, repo):
-    with st.spinner(f"Loading {repo} repository by {owner}..."):
-        try:
-            input_dir_path = f"/Users/francescokruk/{repo}"
-            
-            if not os.path.exists(input_dir_path):
-                subprocess.run(["git", "clone", github_url], check=True, text=True, capture_output=True)
+with st.spinner(f"Loading {repo} repository by {owner}..."):
+    try:
+        input_dir_path = f"/Users/francescokruk/{repo}"
+        
+        if not os.path.exists(input_dir_path):
+            subprocess.run(["git", "clone", github_url], check=True, text=True, capture_output=True)
 
-            if os.path.exists(input_dir_path):
-                loader = SimpleDirectoryReader(
-                    input_dir = input_dir_path,
-                    required_exts=[".py", ".ipynb", ".js", ".ts", ".md"],
-                    recursive=True
-                )
-            else:    
-                st.error('Error occurred while cloning the repository, carefully check the url')
-                st.stop()
-
-            docs = loader.load_data()
-
-            # ====== Create vector store and upload data ======
-            Settings.embed_model = embed_model
-            index = VectorStoreIndex.from_documents(docs)
-
-            # ====== Setup a query engine ======
-            Settings.llm = llm
-            query_engine = index.as_query_engine(streaming=True, similarity_top_k=4)
-            
-            # ====== Customise prompt template ======
-            qa_prompt_tmpl_str = (
-            "Context information is below.\n"
-            "---------------------\n"
-            "{context_str}\n"
-            "---------------------\n"
-            "Given the context information above I want you to think step by step to answer the query in a crisp manner, incase case you don't know the answer say 'I don't know!'.\n"
-            "Query: {query_str}\n"
-            "Answer: "
+        if os.path.exists(input_dir_path):
+            loader = SimpleDirectoryReader(
+                input_dir = input_dir_path,
+                required_exts=[".py", ".ipynb", ".js", ".ts", ".md"],
+                recursive=True
             )
-            qa_prompt_tmpl = PromptTemplate(qa_prompt_tmpl_str)
-
-            query_engine.update_prompts(
-                {"response_synthesizer:text_qa_template": qa_prompt_tmpl}
-            )
-
-            if docs:
-                message_container.success("Data loaded successfully!!")
-            else:
-                message_container.write(
-                    "No data found, check if the repository is not empty!"
-                )
-            st.session_state.query_engine = query_engine
-
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
+        else:    
+            st.error('Error occurred while cloning the repository, carefully check the url')
             st.stop()
 
-        st.success("Ready to Chat!")
-else:
-    st.error('Invalid owner or repository')
-    st.stop()
+        docs = loader.load_data()
+
+        # ====== Create vector store and upload data ======
+        Settings.embed_model = embed_model
+        index = VectorStoreIndex.from_documents(docs)
+
+        # ====== Setup a query engine ======
+        Settings.llm = llm
+        query_engine = index.as_query_engine(streaming=True, similarity_top_k=4)
+        
+        # ====== Customise prompt template ======
+        qa_prompt_tmpl_str = (
+        "Context information is below.\n"
+        "---------------------\n"
+        "{context_str}\n"
+        "---------------------\n"
+        "Given the context information above I want you to think step by step to answer the query in a crisp manner, incase case you don't know the answer say 'I don't know!'.\n"
+        "Query: {query_str}\n"
+        "Answer: "
+        )
+        qa_prompt_tmpl = PromptTemplate(qa_prompt_tmpl_str)
+
+        query_engine.update_prompts(
+            {"response_synthesizer:text_qa_template": qa_prompt_tmpl}
+        )
+
+        if docs:
+            message_container.success("Data loaded successfully!!")
+        else:
+            message_container.write(
+                "No data found, check if the repository is not empty!"
+            )
+        st.session_state.query_engine = query_engine
+
+    except Exception as e:
+        st.error(f"An error occurred: {e}")
+        st.stop()
+
+    st.success("Ready to Chat!")
 
 col1, col2 = st.columns([6, 1])
 
