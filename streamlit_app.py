@@ -42,10 +42,6 @@ llm=HuggingFaceInferenceAPI(
 )
 
 
-def clone_repo(repo_url):
-    return subprocess.run(["git", "clone", repo_url], check=True, text=True, capture_output=True)
-
-
 if "id" not in st.session_state:
     st.session_state.id = uuid.uuid4()
     st.session_state.file_cache = {}
@@ -71,8 +67,7 @@ with st.spinner(f"Loading {repo} repository by {owner}..."):
         input_dir_path = f"/Users/francescokruk/{repo}"
         
         if not os.path.exists(input_dir_path):
-            with st.spinner("Fail"):
-                subprocess.run(["git", "clone", github_url], check=True, text=True, capture_output=True)
+            subprocess.run(["git", "clone", github_url, "/Users/francescokruk/"], check=True, text=True, capture_output=True)
 
         if os.path.exists(input_dir_path):
             loader = SimpleDirectoryReader(
