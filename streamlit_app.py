@@ -25,7 +25,7 @@ from llama_index.llms.huggingface import (
 
 with st.sidebar:
     # Input for Jina API key
-    jinaai_api_key = text_input("Jina API key", type="password")
+    jinaai_api_key = st.text_input("Jina API key", type="password")
 
     if jinaai_api_key != "":
         jinaai_api_key.empty()
