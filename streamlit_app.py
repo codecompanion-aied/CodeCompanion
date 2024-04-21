@@ -26,7 +26,7 @@ from llama_index.llms.huggingface import (
 
 # Input user directory
 text_input_container = st.empty()
-text_input_container.text_input("User directory", "/Users/", key="text_input")
+text_input_container.text_input("User directory", placeholder="/Users/", key="text_input")
 
 if st.session_state.text_input != "":
     text_input_container.empty()
