@@ -24,19 +24,6 @@ from llama_index.llms.huggingface import (
 )
 
 
-# Input for Jina API key
-text_input_container = st.empty()
-text_input_container.text_input("Jina API key", key="api_key", type="password")
-
-if st.session_state.api_key != "":
-    text_input_container.empty()
-    jinaai_api_key = st.session_state.api_key
-    # setting up the embedding model
-    embed_model = JinaEmbedding(
-        api_key=jinaai_api_key,
-        model="jina-embeddings-v2-base-code",
-    )
-
 # setting up the llm
 llm=HuggingFaceInferenceAPI(
     model_name="mistralai/Mixtral-8x7B-Instruct-v0.1"
@@ -65,7 +52,6 @@ message_container = st.empty()  # Placeholder for dynamic messages
 
 with st.spinner(f"Loading {repo} repository by {owner}..."):
     documents = GithubRepositoryReader(
-        github_client=BaseGithubClient,
         owner=owner,
         repo=repo
     ).load_data(branch=branch)
