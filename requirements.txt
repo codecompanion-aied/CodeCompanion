@@ -1,2 +1,3 @@
 nest_asyncio
 python-dotenv
+llama_index
