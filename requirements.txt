@@ -6,3 +6,4 @@ langchain
 llama_index.embeddings.langchain
 loguru
 sentence-transformers
+unstructured
