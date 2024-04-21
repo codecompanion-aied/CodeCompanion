@@ -68,9 +68,10 @@ message_container = st.empty()  # Placeholder for dynamic messages
 
 with st.spinner(f"Loading {repo} repository by {owner}..."):
     try:
-        input_dir_path = "/Users/francescokruk/{repo}"
+        input_dir_path = f"/Users/francescokruk/{repo}"
         
         if not os.path.exists(input_dir_path):
+            with st.spinner("Fail"):
             subprocess.run(["git", "clone", github_url], check=True, text=True, capture_output=True)
 
         if os.path.exists(input_dir_path):
