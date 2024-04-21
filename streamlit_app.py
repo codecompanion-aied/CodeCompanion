@@ -72,7 +72,7 @@ with st.spinner(f"Loading {repo} repository by {owner}..."):
         
         if not os.path.exists(input_dir_path):
             with st.spinner("Fail"):
-            subprocess.run(["git", "clone", github_url], check=True, text=True, capture_output=True)
+                subprocess.run(["git", "clone", github_url], check=True, text=True, capture_output=True)
 
         if os.path.exists(input_dir_path):
             loader = SimpleDirectoryReader(
