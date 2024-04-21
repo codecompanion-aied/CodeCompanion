@@ -69,7 +69,6 @@ with st.spinner(f"Loading {repo} repository by {owner}..."):
         repo=repo,
         use_parser=False,
         verbose=False,
-        ignore_directories=["examples"],
     ).load_data(branch=branch)
 
     docs = loader.load_data()
