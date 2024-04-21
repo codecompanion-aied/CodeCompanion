@@ -60,7 +60,7 @@ def reset_chat():
     gc.collect()
     
 
-github_url = "https://github.com/larymak/Python-project-Scripts"
+github_url = "https://github.com/larymak/Python-project-Scripts.git"
 owner = "larymak"
 repo = "Python-project-Scripts"
 
@@ -68,7 +68,7 @@ message_container = st.empty()  # Placeholder for dynamic messages
 
 with st.spinner(f"Loading {repo} repository by {owner}..."):
     try:
-        input_dir_path = f"/Users/francescokruk/{repo}"
+        input_dir_path = "/Users/francescokruk/{repo}"
         
         if not os.path.exists(input_dir_path):
             subprocess.run(["git", "clone", github_url], check=True, text=True, capture_output=True)
