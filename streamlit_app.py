@@ -61,7 +61,7 @@ message_container = st.empty()  # Placeholder for dynamic messages
 
 with st.spinner(f"Loading {repo} repository by {owner}..."):
     documents = GithubRepositoryReader(
-        github_client=GithubClient(branch=branch),
+        github_client=GithubClient(),
         owner=owner,
         repo=repo
     ).load_data(branch=branch)
