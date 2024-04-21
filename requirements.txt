@@ -5,3 +5,4 @@ llama_index.llms.ollama
 langchain
 llama_index.embeddings.langchain
 loguru
+sentence_transformers
