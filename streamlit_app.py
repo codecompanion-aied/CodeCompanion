@@ -1,4 +1,5 @@
 import os
+import getpass
 import gc
 import re
 import uuid
@@ -28,6 +29,7 @@ llm=HuggingFaceInferenceAPI(
 )
 
 # setting up the embedding model
+jinaai_api_key = getpass.getpass()
 embed_model = JinaEmbedding(
     api_key=jinaai_api_key,
     model="jina-embeddings-v2-base-code",
