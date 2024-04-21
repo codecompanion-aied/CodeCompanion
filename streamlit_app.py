@@ -1,4 +1,3 @@
-# Adapted from https://docs.streamlit.io/knowledge-base/tutorials/build-conversational-apps#build-a-simple-chatbot-gui-with-streaming
 import os
 
 os.environ["HF_HOME"] = "/teamspace/studios/this_studio/weights"
