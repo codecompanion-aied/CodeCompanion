@@ -6,4 +6,4 @@ llama_index
 llama-index-embeddings-jinaai
 llama-index-postprocessor-jinaai-rerank
 llama-index-llms-huggingface
-"huggingface_hub[inference]"
+huggingface_hub[inference]
