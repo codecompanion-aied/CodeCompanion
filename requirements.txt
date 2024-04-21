@@ -1,2 +1,2 @@
 nest_asyncio
-dotenv
+python-dotenv
