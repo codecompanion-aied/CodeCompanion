@@ -1,7 +1,3 @@
-
-187
-188
-189
 # Adapted from https://docs.streamlit.io/knowledge-base/tutorials/build-conversational-apps#build-a-simple-chatbot-gui-with-streaming
 import os
 
