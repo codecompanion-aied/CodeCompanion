@@ -7,3 +7,4 @@ llama-index-embeddings-jinaai
 llama-index-postprocessor-jinaai-rerank
 llama-index-llms-huggingface
 huggingface_hub[inference]
+llama-index-readers-github
