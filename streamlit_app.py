@@ -60,13 +60,11 @@ branch = "main"
 message_container = st.empty()  # Placeholder for dynamic messages
 
 with st.spinner(f"Loading {repo} repository by {owner}..."):
-    documents = GithubRepositoryReader(
+    docs = GithubRepositoryReader(
         github_client=GithubClient(),
         owner=owner,
         repo=repo
     ).load_data(branch=branch)
-
-    docs = loader.load_data()
 
     # ====== Create vector store and upload data ======
     Settings.embed_model = embed_model
