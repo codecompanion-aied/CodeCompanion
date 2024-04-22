@@ -54,7 +54,7 @@ def reset_chat():
 
 
 owner = "francesco-kruk"
-repo = "Python-project-Scripts"
+repo = "Python-project-Scripts-Test"
 branch = "main"
 
 message_container = st.empty()  # Placeholder for dynamic messages
