@@ -1,4 +1,3 @@
-nest_asyncio
 python-dotenv
 loguru
 unstructured
