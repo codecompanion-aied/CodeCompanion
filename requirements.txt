@@ -1,8 +1,9 @@
 python-dotenv
 loguru
 unstructured
+chromadb
 llama_index
-llama-index-embeddings-jinaai
-llama-index-postprocessor-jinaai-rerank
+llama-index-embeddings-huggingface
 llama-index-llms-huggingface
+huggingface_hub
 huggingface_hub[inference]
