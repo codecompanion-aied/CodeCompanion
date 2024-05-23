@@ -1,0 +1,262 @@
+Domain,Topic,Description,Structure,# Steps,Step 1,Step 1 skeleton,Step 2,Step 2 skeleton,Step 3,Step 3 skeleton,Step 4,Step 4 skeleton,Step 5,Step 5 skeleton,Step 6,Step 6 skeleton,Code
+Basics,Password Generator,"This project is a simple password generator that creates random, secure passwords based on user-specified criteria. It utilizes the Python secrets module for generating cryptographically strong random numbers and the string module for creating a character set.","1. Define the Character Set: Use the string module to include all ASCII letters, digits, and punctuation.
+2. Password Generation Function: Write a function to generate a single password of specified length by randomly selecting characters from the defined set.
+3. User Interaction: Implement a loop to repeatedly ask the user for the number of passwords and their lengths, handling exceptions for non-integer inputs.
+4. Generate and Display Passwords: For the number of passwords specified, generate each and print them out.",4,"import string
+
+def define_character_set():
+    return string.ascii_letters + string.digits + string.punctuation
+
+# Function call to see the character set
+character_set = define_character_set()
+print(character_set)","import string
+
+def define_character_set():
+    # This function should return a string containing all ASCII letters, digits, and punctuation
+    pass
+
+# Function call to see the character set
+character_set = define_character_set()
+print(character_set)","import random
+
+def generate_password(length, character_set):
+    return ''.join(random.choice(character_set) for _ in range(length))
+
+# Sample dataset and function call
+character_set = string.ascii_letters + string.digits + string.punctuation
+password = generate_password(10, character_set)  # Generate a 10-character password
+print(password)","import random
+
+def generate_password(length, character_set):
+    # Implement a function that returns a string consisting of 'length' randomly chosen characters from 'character_set'
+    pass
+
+# Sample dataset and function call
+character_set = string.ascii_letters + string.digits + string.punctuation
+password = generate_password(10, character_set)  # Generate a 10-character password
+print(password)","def get_user_input():
+    while True:
+        try:
+            num_pass = int(input(""How many passwords do you want to generate? ""))
+            password_length = int(input(""Enter the length of the password(s): ""))
+            return num_pass, password_length
+        except ValueError:
+            print(""Please enter a valid integer."")
+
+# Function call to execute the step
+num_pass, password_length = get_user_input()
+print(f""Number of Passwords: {num_pass}, Length of Each Password: {password_length}"")","def get_user_input():
+    # Implement a loop that repeatedly asks for two integers: the number of passwords and the length of each password.
+    # Use try-except to handle non-integer inputs and loop until valid integers are provided.
+    pass
+
+# Function call to execute the step
+num_pass, password_length = get_user_input()
+print(f""Number of Passwords: {num_pass}, Length of Each Password: {password_length}"")","def generate_and_display_passwords(num_pass, password_length, character_set):
+    print(""Generated passwords:"")
+    for i in range(num_pass):
+        password = generate_password(password_length, character_set)
+        print(f""{i+1}. {password}"")
+
+# Sample dataset and function call
+character_set = string.ascii_letters + string.digits + string.punctuation
+num_pass, password_length = 5, 12  # Generate 5 passwords, each 12 characters long
+generate_and_display_passwords(num_pass, password_length, character_set)","def generate_and_display_passwords(num_pass, password_length, character_set):
+    # Implement a function that prints 'num_pass' passwords, each 'password_length' long, using the 'character_set'.
+    # Each password should be printed on a new line with an index.
+    pass
+
+# Sample dataset and function call
+character_set = string.ascii_letters + string.digits + string.punctuation
+num_pass, password_length = 5, 12  # Generate 5 passwords, each 12 characters long
+generate_and_display_passwords(num_pass, password_length, character_set)",,,,,"import string
+import secrets
+
+# Define the set of characters to be used in the password
+CHARACTER_SET = string.ascii_letters + string.digits + string.punctuation
+
+def generate_password(length):
+    """"""Generate a random password of the specified length.""""""
+    password = ''.join(secrets.choice(CHARACTER_SET) for i in range(length))
+    return password
+
+def main():
+    # Prompt the user for the number of passwords to generate and their length
+    while True:
+        try:
+            num_pass = int(input(""How many passwords do you want to generate? ""))
+            password_length = int(input(""Enter the length of the password(s): ""))
+            break
+        except ValueError:
+            print(""Please enter a valid integer."")
+            continue 
+    # Generate the specified number of passwords and print them to the console
+    print(""Generated passwords:"")
+    for i in range(num_pass):
+        password = generate_password(password_length)
+        print(f""{i+1}. {password}"")
+
+if __name__ == ""__main__"":
+    main()"
+Basics,Random Name Generator,"This project involves creating a Python script that fetches a list of names from an online source and randomly selects a name from the list. It uses the requests library to download the data from a given URL, which contains a plain text file of proper names. The random library is then used to select a name at random from this list. This could be particularly useful for applications such as generating random usernames, test data, or for any use case where random name selection is needed.","1. Import Libraries:
+Import the requests module to handle HTTP requests.
+Import the random module to enable random selection from the list.
+2. Fetch Data:
+Use the requests.get() method to download the content from a predefined URL that points to a plain text file containing proper names.
+3. Data Processing:
+Process the fetched data by splitting the text into individual names using the split() method. This step removes any empty spaces and organizes the data into an iterable list of names.
+4. Random Name Selection:
+Utilize the random.choice() method to select and print a random name from the list of names. This function is directly used on the list obtained from the splitting operation to pick a name at random.",4,"def import_libraries():
+    # Import the required modules for HTTP requests and random operations.
+    import requests
+    import random
+
+# Function call to import libraries
+import_libraries()","def import_libraries():
+    # Import the requests module for HTTP requests and the random module for random operations.
+    pass
+
+# Function call to import libraries
+import_libraries()","import requests
+
+def fetch_data(url):
+    # Fetch content from the specified URL using the requests.get() method.
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.text
+    else:
+        return ""Failed to retrieve data""
+
+# Function call to fetch data
+url = 'https://svnweb.freebsd.org/csrg/share/dict/propernames?revision=61766&view=co'
+names = fetch_data(url)
+print(names[:500])  # Print the first 500 characters of the fetched data for demonstration","import requests
+
+def fetch_data(url):
+    # Use requests.get() to download data from a URL and return the text content of the response.
+    pass
+
+# Function call to fetch data
+url = 'https://svnweb.freebsd.org/csrg/share/dict/propernames?revision=61766&view=co'
+names = fetch_data(url)
+print(names[:500])  # Example of checking the first 500 characters of the data","def process_data(data):
+    # Split the data into individual names using the split() method.
+    return data.split()
+
+# Function call to process data
+individual_words = process_data(names)
+print(individual_words[:10])  # Print the first 10 names to verify the split","def process_data(data):
+    # Split the input data into a list of individual names using the split() method.
+    pass
+
+# Function call to process data
+individual_words = process_data(names)
+print(individual_words[:10])  # Example of checking the first 10 processed items","import random
+
+def select_random_name(names_list):
+    # Select and print a random name from the list using random.choice().
+    return random.choice(names_list)
+
+# Function call to select a random name
+random_name = select_random_name(individual_words)
+print(random_name)","import random
+
+def select_random_name(names_list):
+    # Use the random.choice() method to select a random name from the provided list.
+    pass
+
+# Function call to select a random name
+random_name = select_random_name(individual_words)
+print(random_name)
+",,,,,"import requests
+import random
+
+url = 'https://svnweb.freebsd.org/csrg/share/dict/propernames?revision=61766&view=co'
+
+names = requests.get(url).text
+
+# We are splitting the words to clear out the empty spaces and create iterable
+individual_words = names.split()
+
+# to get random word
+print(random.choice(individual_words))"
+Basics,Shorten Links,"This project is a simple Python script that utilizes the pyshorteners library to shorten URLs. The script prompts the user to input a long URL and then uses the tinyurl service provided by pyshorteners to generate a shortened version of the URL. It's particularly useful for making lengthy URLs more manageable and easier to share, especially on platforms where character space is limited.","1. Import Library:
+Import the pyshorteners module, which is used to interact with various URL shortening services.
+2. Capture User Input:
+Prompt the user to enter the URL they wish to shorten. This is done using the input() function to capture user input from the command line.
+3. Shorten URL:
+Initialize a Shortener object from the pyshorteners library.
+Use the tinyurl service within pyshorteners to shorten the provided URL.
+Store the shortened URL in a variable.
+4. Display Result:
+Print the shortened URL to the console, providing the user with the transformed link.
+5. Execution:
+The script is designed to run interactively: once started, it will prompt for input, process that input to shorten the URL, and then display the result—all in a straightforward, linear sequence.",5,"def import_library():
+    # Import the pyshorteners module to access URL shortening services.
+    import pyshorteners
+
+# Function call to import library
+import_library()","def import_library():
+    # Import the pyshorteners library needed for URL shortening services.
+    pass
+
+# Function call to import library
+import_library()","def capture_user_input():
+    # Prompt the user to enter a URL to be shortened.
+    link = input(""\nEnter your link: "")
+    return link
+
+# Function call to capture user input
+user_link = capture_user_input()","def capture_user_input():
+    # Prompt the user to enter a URL that they wish to shorten and return it.
+    pass
+
+# Function call to capture user input
+user_link = capture_user_input()","import pyshorteners
+
+def shorten_url(link):
+    # Create a Shortener object and use it to shorten the provided URL using the tinyurl service.
+    shortener = pyshorteners.Shortener()
+    short_url = shortener.tinyurl.short(link)
+    return short_url
+
+# Function call to shorten the URL
+shortened_url = shorten_url(user_link)","import pyshorteners
+
+def shorten_url(link):
+    # Use the pyshorteners library to create a shortener object and shorten the provided URL.
+    pass
+
+# Function call to shorten the URL
+shortened_url = shorten_url(user_link)","def display_result(short_url):
+    # Print the shortened URL to the console.
+    print(""\nShortened link is: "" + short_url)
+
+# Function call to display the shortened URL
+display_result(shortened_url)","def display_result(short_url):
+    # Output the shortened URL to the console.
+    pass
+
+# Function call to display the shortened URL
+display_result(shortened_url)","if __name__ == '__main__':
+    # Execute the URL shortening process interactively.
+    import_library()
+    user_link = capture_user_input()
+    shortened_url = shorten_url(user_link)
+    display_result(shortened_url)","if __name__ == '__main__':
+    # Run the full process of importing the library, capturing user input, shortening the URL, and displaying the result.
+    import_library()
+    user_link = capture_user_input()
+    shortened_url = shorten_url(user_link)
+    display_result(shortened_url)",,,"""""""
+Example input : https://github.com/Dhrumil-Zion/Python-project-Scripts
+""""""
+
+import pyshorteners
+
+link = input(""\nEnter your link : "")
+
+short = pyshorteners.Shortener()
+x = short.tinyurl.short(link)
+
+print(""\nShorted link is : ""+x)"

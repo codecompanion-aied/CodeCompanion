@@ -1,9 +1,6 @@
-python-dotenv
-loguru
-unstructured
+streamlit
 chromadb
-llama_index
-llama-index-embeddings-huggingface
-llama-index-llms-huggingface
 huggingface_hub
 huggingface_hub[inference]
+langchain
+langchain-community
