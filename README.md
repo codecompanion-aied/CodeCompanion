@@ -1,4 +1,4 @@
-# AI4SI-2024
+# CodeCompanion
 
 Todo:
 - Create a structure for the chunking so that the LLM has the correct context depending on the stage of the user interaction:
