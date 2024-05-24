@@ -1,6 +1,8 @@
 streamlit
+streamlit_code_editor
 chromadb
 huggingface_hub
 huggingface_hub[inference]
 langchain
 langchain-community
+FlagEmbedding
