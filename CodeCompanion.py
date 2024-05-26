@@ -2,7 +2,7 @@ import os
 import uuid
 import csv
 import streamlit as st
-from code_editor import code_editor
+from streamlit_ace import st_ace
 import chromadb
 from langchain.prompts import PromptTemplate
 from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
@@ -40,10 +40,13 @@ if "project" not in st.session_state:
     st.session_state.project = None
 
 if "task" not in st.session_state:
-    st.session_state.task = 1
+    st.session_state.task = 0
 
-if "completed" not in st.session_state:
-    st.session_state.completed = False
+if "feedback" not in st.session_state:
+    st.session_state.feedback = True
+
+if "submission" not in st.session_state:
+    st.session_state.submission = None
 
 st.title("CodeCompanion by Team CC #AI4Impact2024")
 
@@ -147,48 +150,6 @@ def index_passages(descriptions, embeddings, metadatas):
     )
 
 
-with st.sidebar:
-    HF_TOKEN = st.text_input(
-        label="Enter your HuggingFace Access Token to start\n\nhttps://huggingface.co/settings/tokens", type="password",
-        key="text_input")
-    if HF_TOKEN:
-        st.session_state.token = True
-        llm_container = st.empty()
-        with st.spinner(f"Loading LLM: {LLM_MODEL}"):
-            # Define HuggingFace tokens needed to access the model and the Inference API
-            os.environ["HUGGINGFACEHUB_API_TOKEN"] = HF_TOKEN
-            os.environ["HF_TOKEN"] = HF_TOKEN
-            # Define the LLM model through the HuggingFace Inference API and set temperature to 0.01 to ensure near-deterministic behavior
-            llm = load_llm_model()
-            llm_container.success(f"{LLM_MODEL} loaded successfully!")
-
-        embed_container = st.empty()
-        with st.spinner(f"Loading Embedding Model: {EMBED_MODEL}"):
-            # Define embedding model
-            embed_model = load_embed_model(HF_TOKEN)
-            embed_container.success(f"{EMBED_MODEL} loaded successfully!")
-
-        rerank_container = st.empty()
-        with st.spinner(f"Loading Reranker Model: {RERANK_MODEL}"):
-            # Define embedding model
-            rerank_model = load_rerank_model()
-            rerank_container.success(f"{RERANK_MODEL} loaded successfully!")
-
-        collection_container = st.empty()
-        with st.spinner(f"Loading Collection: {COLLECTION_NAME}"):
-            try:
-                collection = client.get_collection(name=COLLECTION_NAME)
-                collection_container.success(f"{COLLECTION_NAME} collection loaded successfully!")
-            except ValueError:
-                collection_container.warning(f"{COLLECTION_NAME} collection does not exist and will be created first...")
-                descriptions, metas = parse_corpus()
-                embeddings = generate_embeddings(descriptions)
-                index_passages(descriptions, embeddings, metas)
-                collection_container.success(f"{COLLECTION_NAME} collection loaded successfully!")
-
-        st.success("CodeCompanion is ready to Chat!")
-
-
 def retrieve_passages(query, top_k):
   '''
   Takes as input a query and finds the top k passages and returns them
@@ -280,68 +241,138 @@ def generate_chat_answer(question, original_code):
   return answer
 
 
-def choose_project(prompt):
-    top3_projects = rerank_passages(prompt)
-    with st.chat_message("assistant"):
-        st.markdown("Here are 3 projects that fit your request. Chose the one you want to work on.")
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            with st.popover(top3_projects[0]["topic"]):
-                st.markdown(top3_projects[0]["description"])
-                st.markdown(top3_projects[0]["structure"])
-                if st.button("Chose project", key="chose_project_1"):
-                    st.session_state.choice = True
-                    st.session_state.project = top3_projects[0]
-        with col2:
-            with st.popover(top3_projects[1]["topic"]):
-                st.markdown(top3_projects[1]["description"])
-                st.markdown(top3_projects[1]["structure"])
-                if st.button("Chose project", key="chose_project_2"):
-                    st.session_state.choice = True
-                    st.session_state.project = top3_projects[1]
-        with col3:
-            with st.popover(top3_projects[2]["topic"]):
-                st.markdown(top3_projects[2]["description"])
-                st.markdown(top3_projects[2]["structure"])
-                if st.button("Chose project", key="chose_project_3"):
-                    st.session_state.choice = True
-                    st.session_state.project = top3_projects[2]
-    if st.session_state.choice:
-        with st.chat_message("assistant"):
-            st.markdown(f"""Project "{st.session_state.project["topic"]}" is loaded!""")
-            st.button("Start coding")
+def generate_feedback(submission, original_code):
+  '''
+  Takes as input question, original code, and code skeleton and generates an answer
+
+  Args:
+    quesstion (str): input question
+    original_code (str): original project code
+    code_skeleton (str): code skeleton to be filled out by user
+
+  Returns:
+    answer (str): answer generated based on code skeleton and original code
+  '''
+
+  prompt = """ <s>[INST] You are a helpful assistant whose role is to provide feedback to a user submission based on the original task.\n
+        Given the original code, assess whether or not the user submission is correct and give the user a short and concise feedback on their submission.\n
+        The user submission should fullfill the same function as the original code, even though the implementation might differ.\n
+        Make sure to generate your feedback in markdown format.\n
+        Pretend you are directly speaking to the user when answering.\n
+        User submission: {submission}\n
+        Original task: {original_code}
+        [/INST] </s>"""
+
+  prompt = PromptTemplate(template=prompt, input_variables=["submission", "original_code"])
+  llm_chain = prompt | llm
+  answer = llm_chain.invoke({"submission":submission, "original_code":original_code})
+
+  return answer
 
 
-column1, column2 = st.columns([0.8, 0.2])
+def project_chosen(project):
+    st.session_state.choice = True
+    st.session_state.project = project
+
+
+def choose_project(query):
+    top3_projects = rerank_passages(query)
+    st.markdown("Here are 3 projects that fit your request. Chose the one you want to work on.")
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        help0 = top3_projects[0]["description"] + "\n\n" + top3_projects[0]["structure"]
+        st.button(top3_projects[0]["topic"], on_click=project_chosen, args=(top3_projects[0],), help=help0, use_container_width=True)
+    with col2:
+        help1 = top3_projects[1]["description"] + "\n\n" + top3_projects[1]["structure"]
+        st.button(top3_projects[1]["topic"], on_click=project_chosen, args=(top3_projects[1],), help=help1, use_container_width=True)
+    with col3:
+        help2 = top3_projects[2]["description"] + "\n\n" + top3_projects[2]["structure"]
+        st.button(top3_projects[2]["topic"], on_click=project_chosen, args=(top3_projects[2],), help=help2, use_container_width=True)
+
+
+def next_task():
+    st.session_state.task += 1
+    st.session_state.feedback = True
+    reset_chat()
+
+
+with st.sidebar:
+    HF_TOKEN = st.text_input(
+        label="Enter your HuggingFace Access Token to start\n\nhttps://huggingface.co/settings/tokens", type="password",
+        key="text_input")
+    if HF_TOKEN:
+        st.session_state.token = True
+        llm_container = st.empty()
+        with st.spinner(f"Loading LLM: {LLM_MODEL}"):
+            # Define HuggingFace tokens needed to access the model and the Inference API
+            os.environ["HUGGINGFACEHUB_API_TOKEN"] = HF_TOKEN
+            os.environ["HF_TOKEN"] = HF_TOKEN
+            # Define the LLM model through the HuggingFace Inference API and set temperature to 0.01 to ensure near-deterministic behavior
+            llm = load_llm_model()
+            llm_container.success(f"{LLM_MODEL} loaded successfully!")
+
+        embed_container = st.empty()
+        with st.spinner(f"Loading Embedding Model: {EMBED_MODEL}"):
+            # Define embedding model
+            embed_model = load_embed_model(HF_TOKEN)
+            embed_container.success(f"{EMBED_MODEL} loaded successfully!")
+
+        rerank_container = st.empty()
+        with st.spinner(f"Loading Reranker Model: {RERANK_MODEL}"):
+            # Define embedding model
+            rerank_model = load_rerank_model()
+            rerank_container.success(f"{RERANK_MODEL} loaded successfully!")
+
+        collection_container = st.empty()
+        with st.spinner(f"Loading Collection: {COLLECTION_NAME}"):
+            try:
+                collection = client.get_collection(name=COLLECTION_NAME)
+                collection_container.success(f"{COLLECTION_NAME} collection loaded successfully!")
+            except ValueError:
+                collection_container.warning(f"{COLLECTION_NAME} collection does not exist and will be created first...")
+                descriptions, metas = parse_corpus()
+                embeddings = generate_embeddings(descriptions)
+                index_passages(descriptions, embeddings, metas)
+                collection_container.success(f"{COLLECTION_NAME} collection loaded successfully!")
+
+        st.success("CodeCompanion is ready to Chat!")
+
 if st.session_state.token:
+    # column1, column2 = st.columns([0.8, 0.2])
     if not st.session_state.choice:
         with st.chat_message("assistant"):
             st.markdown("What kind of project you are looking for?")
-        with st.chat_message("user"):
-            prompt = st.text_input("Describe what you're looking for...", label_visibility="collapsed")
+        prompt = st.chat_input("I am looking for...")
         if prompt:
-            with st.spinner(f"Retrieving relevant projects..."):
-                choose_project(prompt)
+            with st.chat_message("user"):
+                st.markdown(prompt)
+            with st.chat_message("assistant"):
+                with st.spinner(f"Retrieving relevant projects..."):
+                    choose_project(prompt)
     else:
-        with column2:
-            if st.button("Submit task"):
-                st.session_state.task += 1
-                reset_chat()
-        with column1:
-            if st.session_state.task <= int(st.session_state.project["steps"]):
+        if st.session_state.task < int(st.session_state.project["steps"]) and st.session_state.feedback:
+            with st.chat_message("assistant"):
+                st.markdown("This is your current task:")
+                submission = st_ace(st.session_state.project[f"task_{st.session_state.task}"])
+            if st.button("Submit task", help="Rember to apply the code before submitting"):
+                st.session_state.feedback = False
                 with st.chat_message("assistant"):
-                    st.markdown("This is your current task:")
-                    response = code_editor(st.session_state.project[f"task_{st.session_state.task}"])
+                    with st.spinner("Generating feedback..."):
+                        feedback = generate_feedback(submission, st.session_state.project[f"code_{st.session_state.task}"])
+                        st.session_state.messages.append({"role": "assistant", "content": feedback})
+                    st.markdown(feedback)
+                st.button("Start next task", on_click=next_task)
+            if question := st.chat_input("How can I help?"):
                 for message in st.session_state.messages:
                     with st.chat_message(message["role"]):
                         st.markdown(message["content"])
-                if question := st.chat_input("How can I help?"):
-                    st.session_state.messages.append({"role": "user", "content": question})
-                    with st.chat_message("user"):
-                        st.markdown(question)
-                        answer = generate_chat_answer(question,st.session_state.project[f"code_{st.session_state.task}"])
-                    st.session_state.messages.append({"role": "assistant", "content": answer})
-                    with st.chat_message("assistant"):
-                        st.markdown(answer)
-            else:
-                st.subheader("You have completed your project. Thank you for using CodeCompanion!")
+                st.session_state.messages.append({"role": "user", "content": question})
+                with st.chat_message("user"):
+                    st.markdown(question)
+                with st.chat_message("assistant"):
+                    with st.spinner("Thinking..."):
+                        answer = generate_chat_answer(question, st.session_state.project[f"code_{st.session_state.task}"])
+                        st.session_state.messages.append({"role": "assistant", "content": answer})
+                    st.markdown(answer)
+        elif st.session_state.task == int(st.session_state.project["steps"]):
+            st.subheader("You have completed your project. Thank you for using CodeCompanion!")
