@@ -87,7 +87,7 @@ def parse_corpus():
 
     project_descriptions = []
     project_meta = []
-    with open("CodeCompanion - Test.csv") as f:
+    with open("CodeCompanion.csv") as f:
         data = csv.reader(f, delimiter=",")
         idx = 0
         for row in data:
