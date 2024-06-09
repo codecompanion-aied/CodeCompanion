@@ -3,7 +3,9 @@
 
 ### What is CodeCompanion
 
-CodeCompanion is an AI coding assistant that proposes coding projects to users, breaks them down into single tasks, and supports the user in solving each task. By grounding state-of-the-art Natural Language Processing (NLP) and Generative AI models in existing projects, CodeCompanion addresses the lack of personalized guidance with minimal likelihood of hallucinating and the lack of accurate guidance that fails to adapt to changing user needs. CodeCompanion enhances the coding learning process by providing relevant, personalized learning experiences. It can contribute to reducing the digital divide and empowering more individuals with the coding skills necessary 
+CodeCompanion is an AI coding assistant that proposes coding projects to users, breaks them down into single tasks, and supports the user in solving each task. By grounding state-of-the-art Natural Language Processing (NLP) and Generative AI models in existing projects, CodeCompanion addresses the lack of personalized guidance with minimal likelihood of hallucinating and the lack of accurate guidance that fails to adapt to changing user needs. CodeCompanion enhances the coding learning process by providing relevant, personalized learning experiences. It can contribute to reducing the digital divide and empowering more individuals with the coding skills necessary.
+
+https://github.com/codecompanion-aied/CodeCompanion/assets/46400934/308ea3ad-a39d-4de4-b95f-292c8e5cb1df
 
 ### Instructions to run CodeCompanion
 
